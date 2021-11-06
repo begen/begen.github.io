@@ -18,7 +18,7 @@ background: '/posts/sagemaker/sagemaker.jpeg'
 
 <p>In Jupyter, create a new conda_python3 notebook.</p>
 
-<p>Below code imports the required libraries amd defines environmental variables needed to prepare the data, train the ML Model, and deploy the ML Model.
+<p>Below code imports the required libraries amd defines environmental variables needed to prepare the data, train the ML Model, and deploy ML Model
 
 </p>
 

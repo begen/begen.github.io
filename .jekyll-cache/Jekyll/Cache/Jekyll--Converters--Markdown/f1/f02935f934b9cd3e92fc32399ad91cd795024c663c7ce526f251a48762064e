@@ -1,4 +1,4 @@
-I"<p>In this tutorial, we will be working with Amazon SageMaker to build, train and deploy a machine learning model using XGBoost algorithm.</p>
+I"<p>In this tutorial, we will be working with Amazon SageMaker to build, train and deploy a machine learning model using XGBoost algorithm.</p>
 
 <p>We will be working with a bank dataset and we will try to predict whether a customer will enroll for a certificate of deposit or CD.</p>
 
@@ -10,7 +10,7 @@
 
 <p>In Jupyter, create a new conda_python3 notebook.</p>
 
-<p>Below code imports the required libraries amd defines environmental variables needed to prepare the data, train the ML Model, and deploy the ML Model.
+<p>Below code imports the required libraries amd defines environmental variables needed to prepare the data, train the ML Model, and deploy ML Model
 
 </p>
 
