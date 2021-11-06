@@ -42,3 +42,43 @@ background: '/posts/sagemaker/sagemaker.jpeg'
     xgboost_container = sagemaker.image_uris.retrieve("xgboost", my_region, "latest")
 
     print("Success - the MySageMakerInstance is in the " + my_region + " region. You will use the " + xgboost_container + " container for your SageMaker endpoint.")
+    
+    
+    <p>We need storage where we will be upload and store our data. For that, we will be using Amazon resources and we will to create S3 bucket in one of the AWS regions. Below code creates a bucket with a unique name that will be reserved for us until it is deleted. We choose a region that is close to optimize latency and to minimize cost. 
+    </p>
+    
+    bucket_name = 'your-s3-bucket-name' # <--- CHANGE THIS VARIABLE TO A UNIQUE NAME FOR YOUR BUCKET
+    s3 = boto3.resource('s3')
+    try:
+    if  my_region == 'us-east-1':
+      s3.create_bucket(Bucket=bucket_name)
+    else: 
+      s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={ 'LocationConstraint': my_region })
+    print('S3 bucket created successfully')
+    except Exception as e:
+    print('S3 error: ',e)
+
+    
+    <p>In below code, we copy the file denoted by the URL to a local S3 bucket. In our case, the file is csv and  load it to datafame and assign to a variable model_data. 
+    </p>
+    try:
+      urllib.request.urlretrieve ("https://d1.awsstatic.com/tmt/build-train-deploy-machine-learning-model-sagemaker/bank_clean.27f01fbbdf43271788427f3682996ae29ceca05d.csv", "bank_clean.csv")
+    print('Success: downloaded bank_clean.csv.')
+    except Exception as e:
+    print('Data load error: ',e)
+
+    try:
+    model_data = pd.read_csv('./bank_clean.csv',index_col=0)
+    print('Success: Data loaded into dataframe.')
+    except Exception as e:
+
+    <p>
+    Next, we shuffle date and split data into train and test data with 70%  and 30% ratio, respectively. 
+    </p>
+    
+    train_data, test_data = np.split(model_data.sample(frac=1, random_state=1729), [int(0.7 * len(model_data))])
+    print(train_data.shape, test_data.shape)
+
+
+    <p>Training the ML Model:
+    </p>
