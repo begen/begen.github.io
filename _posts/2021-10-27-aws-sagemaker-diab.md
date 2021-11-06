@@ -42,3 +42,23 @@ background: '/posts/sagemaker/sagemaker.jpeg'
     xgboost_container = sagemaker.image_uris.retrieve("xgboost", my_region, "latest")
 
     print("Success - the MySageMakerInstance is in the " + my_region + " region. You will use the " + xgboost_container + " container for your SageMaker endpoint.")
+    
+    
+    <p>We need storage where we will be upload and store our data. For that, we will be using Amazon resources and we will to create S3 bucket in one of the AWS regions. Below code creates a bucket with a unique name that will be reserved for us until it is deleted. We choose a region that is close to optimize latency and to minimize cost. 
+    </p>
+    
+    bucket_name = 'your-s3-bucket-name' # <--- CHANGE THIS VARIABLE TO A UNIQUE NAME FOR YOUR BUCKET
+    s3 = boto3.resource('s3')
+    try:
+    if  my_region == 'us-east-1':
+      s3.create_bucket(Bucket=bucket_name)
+    else: 
+      s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={ 'LocationConstraint': my_region })
+    print('S3 bucket created successfully')
+    except Exception as e:
+    print('S3 error: ',e)
+
+    
+    
+    
+    
