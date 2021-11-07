@@ -22,6 +22,8 @@ background: '/posts/sagemaker/sagemaker.jpeg'
 
 </p>
 
+#### Prepare the data
+
     # import libraries
     import boto3, re, sys, math, json, os, sagemaker, urllib.request
     from sagemaker import get_execution_role
@@ -81,8 +83,8 @@ background: '/posts/sagemaker/sagemaker.jpeg'
     print(train_data.shape, test_data.shape)
 
 
-  <p>Training the ML Model:
-    </p>
+  #### Training the ML Model:
+  
 
 
 <p>
@@ -111,6 +113,8 @@ Now, we will train the model using training data
 
     xgb.fit({'train': s3_input_train})
 
+
+#### Deploy the model
 <p>
 Once we train the model, we will deploy the trained model to an endpoint and run the model to create predictions. 
 </p>
@@ -131,7 +135,7 @@ Now, we will be using our test data to evaluate our model
     print(predictions_array.shape)
 
 
-### Evaluation of Model
+#### Evaluation of Model and Performance
 
     cm = pd.crosstab(index=test_data['y_yes'], columns=np.round(predictions_array), rownames=['Observed'], colnames=['Predicted'])
     tn = cm.iloc[0,0]; fn = cm.iloc[1,0]; tp = cm.iloc[1,1]; fp = cm.iloc[0,1]; p = (tp+tn)/(tp+tn+fp+fn)*100
