@@ -3,7 +3,7 @@ layout: post
 title: "Amazon SageMaker- Predict Whether a Customer Will Enroll for a Certificate of Deposit"
 subtitle: "In this tutorial, we build, train and deploy a machine learning model with AWS SageMaker"
 date: 2021-10-27 23:45:13 -0400
-background: '/posts/sagemaker/sagemaker.jpeg'
+background: '/img/bg-post.jpg'
 ---
 
 <p>In this tutorial, we will be working with Amazon SageMaker to build, train and deploy a machine learning model using XGBoost algorithm.</p>
