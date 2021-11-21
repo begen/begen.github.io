@@ -1,0 +1,410 @@
+I"ŭ<p> 
+When it comes to the definition of ML, I want to thin as building models of data.</p>
+
+<p>In essence, machine learning basically mean building mathematical models to help understand data. </p>
+
+<p>Word “learning” is associated with tuning parameters. </p>
+
+<p>Once the model have been fit to previously seen data they can be used to predict and understand new observations. </p>
+
+<p>We have data of 2249 customers visiting stores with following information</p>
+
+<p>
+Education level
+Marital status
+Kids at home
+Teen at home
+Income
+Amounts spent on fish products
+Amounts spent on mean products
+Amounts spent on fruits
+Amounts spent on sweet products 
+Amounts spent on gold products
+Amounts spent on wines
+Number of purchases made with discounts
+Number of purchases made with catalogue
+Number of purchases made in store
+Website purchases
+Number of visits to website
+Number of days since the last purchase
+</p>
+
+<p>We also have data on customer acceptance of campaign 1 to 5. </p>
+<p>Our target variable is response that is if customer accepted the offer in one of those campaigns. </p>
+
+<p>In this research project, we will be identifying groups of people who will respond to an offer for a product or a service. </p>
+
+<p>Based on the data, we know that our target variable or dependent variable is “Response” column with 1 and 0 values. </p>
+
+<p>Our predictive variables are the rest of columns that we explained above. Predictive variables are also called independent variables or features.</p>
+
+<p>Lets first import data:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import pandas as pd
+import numpy as np
+import seaborn as sns
+from matplotlib import pyplot as plt
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, StackingClassifier
+from xgboost import XGBClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, classification_report
+from imblearn.combine import SMOTETomek
+from sklearn.feature_selection import SelectFromModel
+from sklearn.decomposition import PCA
+from sklearn.metrics import confusion_matrix
+
+pd.options.display.max_columns = None
+
+pd.options.display.max_rows = None
+
+np.set_printoptions(suppress=True)
+
+
+df = pd.read_csv('marketing_campaign.csv', sep=';')
+df.head()
+</code></pre></div></div>
+
+<p>We have some unnecessary column that is ID, we do not need this ID column, hence we drop. It from our dataframe </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>df.drop('ID', axis=1, inplace = True)
+print('Data contains', df.shape[0], 'rows and', df.shape[1], 'columns')
+df.info()
+</code></pre></div></div>
+<p>To get descriptive statistics of the dataframe, we can run datagframe.describe() </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>df.describe().T
+df.describe(include='O').T
+</code></pre></div></div>
+
+<p>Feature Engineering 
+
+Our features (independent variables) must not contain missing or null values, outliers, data on a different scale, human errors and multicollinearity and very large independent sets. Multicollinearity is the concept when features are correlated. We do not want many features that are correlated to each other. 
+
+As part of feature engineering, we will check our data for missing or null values. We can find if our dataset contains any null values by running following line of code: 
+</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>df.isnull().sum() 
+df['Income']=df['Income'].fillna(df['Income'].mean())
+df.isnull().sum()
+</code></pre></div></div>
+
+<p>We can see that income contains 24 missing values. We either can drop those missing values. However in our case, we will calculate the average of income and replace with average. This should not significantly affect our prediction.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>df=df[np.abs(df.Income-df.Income.mean())&lt;=(3*df.Income.std())]
+sns.boxplot(data=df['Income'])
+
+
+sns.countplot(df['Response'])
+plt.show()
+
+#sns.pairplot(df)
+
+plt.figure(figsize=(30,25))
+sns.heatmap(df.corr(), annot=True)
+
+df['Dt_Customer'] = df['Dt_Customer'].astype('datetime64')
+df['Date_Customer'] = df['Dt_Customer'].dt.day
+df['Month_Customer'] = df['Dt_Customer'].dt.month
+df['Year_Customer'] = df['Dt_Customer'].dt.year
+df.drop('Dt_Customer', axis=1, inplace=True)
+df
+
+df_cat=df.select_dtypes(exclude=[np.number])
+df_cat
+
+def encode(dataframe):
+    lec = LabelEncoder()
+    for j in dataframe.columns:
+        if(dataframe[j].dtype == 'object'):
+            dataframe[j] = lec.fit_transform(dataframe[j])
+            
+encode(df)
+df
+
+x = df.drop('Response', axis=1)
+y = df['Response']
+
+X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=0.3, random_state=1)
+
+log_reg = LogisticRegression(max_iter=5000)
+log_reg.fit(X_train, Y_train)
+
+log_reg_pred = log_reg.predict(X_test)
+print(classification_report(Y_test, log_reg_pred))
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'marketing_campaign.csv'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">';'</span><span class="p">)</span>
+
+<span class="c1"># Dropping ID Column beacause we dont id column for predictions
+</span><span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'ID'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Shape of Dataset
+</span><span class="k">print</span><span class="p">(</span><span class="s">'Data contains'</span><span class="p">,</span> <span class="n">df</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">'rows and'</span><span class="p">,</span> <span class="n">df</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">'columns'</span><span class="p">)</span>
+
+<span class="c1"># Dataset information about value count and variable data type
+</span><span class="n">df</span><span class="p">.</span><span class="n">info</span><span class="p">()</span>
+
+<span class="n">df</span><span class="p">.</span><span class="n">describe</span><span class="p">().</span><span class="n">T</span>
+
+<span class="c1"># Categorical Data Description
+</span><span class="n">df</span><span class="p">.</span><span class="n">describe</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s">'O'</span><span class="p">).</span><span class="n">T</span>
+
+<span class="c1"># Check for null values in the dataset
+</span><span class="n">df</span><span class="p">.</span><span class="n">isnull</span><span class="p">().</span><span class="nb">sum</span><span class="p">()</span> 
+
+
+<span class="c1"># Filling NA
+</span><span class="k">def</span> <span class="nf">fill_na</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span><span class="p">(((</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">isnull</span><span class="p">().</span><span class="nb">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">'int64'</span><span class="p">):</span>
+            <span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fillna</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">median</span><span class="p">())</span>
+            
+        <span class="k">elif</span><span class="p">(((</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">isnull</span><span class="p">().</span><span class="nb">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">'O'</span><span class="p">):</span>
+            <span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fillna</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">mode</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            
+        <span class="k">elif</span><span class="p">(((</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">isnull</span><span class="p">().</span><span class="nb">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">'float64'</span><span class="p">):</span>
+            <span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fillna</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">median</span><span class="p">())</span>
+            
+<span class="n">fill_na</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1">#Checking outliers
+</span><span class="k">def</span> <span class="nf">detect_outliers</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">'int64'</span><span class="p">):</span>
+            <span class="n">sns</span><span class="p">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+            
+        <span class="k">elif</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">'float64'</span><span class="p">):</span>
+            <span class="n">sns</span><span class="p">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+            
+<span class="n">detect_outliers</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+
+<span class="c1"># Plot Response variable seperately because our target variable(Class) is int and we have to treat it like object this time
+</span><span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'Response'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">sns</span><span class="p">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Check correlation between variables
+</span><span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">25</span><span class="p">))</span>
+<span class="n">sns</span><span class="p">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">corr</span><span class="p">(),</span> <span class="n">annot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s">'Dt_Customer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'Dt_Customer'</span><span class="p">].</span><span class="n">astype</span><span class="p">(</span><span class="s">'datetime64'</span><span class="p">)</span>
+<span class="c1"># Creating two new columns Date_customer and Month_customer from Dt_Customer column
+</span><span class="n">df</span><span class="p">[</span><span class="s">'Date_Customer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'Dt_Customer'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">day</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'Month_Customer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'Dt_Customer'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">month</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'Year_Customer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'Dt_Customer'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">year</span>
+<span class="c1"># Now we can drop Dt_Customer column
+</span><span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'Dt_Customer'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+    <span class="n">lec</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="p">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">j</span><span class="p">].</span><span class="n">dtype</span> <span class="o">==</span> <span class="s">'object'</span><span class="p">):</span>
+            <span class="n">dataframe</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">lec</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            
+<span class="n">encode</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'Response'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'Response'</span><span class="p">]</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">lr</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+
+<span class="n">lr_pred</span> <span class="o">=</span> <span class="n">lr</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">lr_pred</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">xgb</span> <span class="o">=</span> <span class="n">XGBClassifier</span><span class="p">()</span>
+<span class="n">xgb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+
+<span class="n">xgb_pred</span><span class="o">=</span><span class="n">xgb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">xgb_pred</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="n">rf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+
+<span class="n">rf_pred</span> <span class="o">=</span> <span class="n">rf</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">rf_pred</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gb</span><span class="o">=</span><span class="n">GradientBoostingClassifier</span><span class="p">()</span>
+<span class="n">gb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">)</span>
+
+<span class="n">gb_pred</span><span class="o">=</span><span class="n">gb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">gb_pred</span><span class="p">))</span>
+
+<span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">gb_pred</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">estimators</span><span class="o">=</span><span class="p">[(</span><span class="s">'xgb'</span><span class="p">,</span><span class="n">XGBClassifier</span><span class="p">()),</span>
+<span class="p">(</span><span class="s">'rf'</span><span class="p">,</span> <span class="n">RandomForestClassifier</span><span class="p">()),</span>
+<span class="p">(</span><span class="s">'gb'</span><span class="p">,</span><span class="n">GradientBoostingClassifier</span><span class="p">())]</span>
+<span class="n">stack</span><span class="o">=</span><span class="n">StackingClassifier</span><span class="p">(</span><span class="n">estimators</span><span class="o">=</span><span class="n">estimators</span><span class="p">)</span>
+<span class="n">stack</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">)</span>
+
+<span class="n">stack_pred</span><span class="o">=</span><span class="n">stack</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">stack_pred</span><span class="p">))</span>
+<span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">stack_pred</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Balancing the target variable
+</span><span class="n">smote</span><span class="o">=</span><span class="n">SMOTETomek</span><span class="p">()</span>
+<span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="o">=</span><span class="n">smote</span><span class="p">.</span><span class="n">fit_resample</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">Y_train</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#Logistics regression
+</span><span class="n">slr</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">slr</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">slr_pred</span><span class="o">=</span><span class="n">slr</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">slr_pred</span><span class="p">))</span>
+<span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">slr_pred</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#XGBoost Classifier
+</span>
+<span class="n">sxgb</span><span class="o">=</span><span class="n">XGBClassifier</span><span class="p">()</span>
+<span class="n">sxgb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">sxgb_pred</span><span class="o">=</span><span class="n">sxgb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">sxgb_pred</span><span class="p">))</span>
+<span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">slr_pred</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">srf</span><span class="o">=</span><span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="n">srf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">sfr_pred</span><span class="o">=</span><span class="n">srf</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">sfr_pred</span><span class="p">))</span>
+<span class="n">accuracy_score</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sgb</span><span class="o">=</span><span class="n">GradientBoostingClassifier</span><span class="p">()</span>
+<span class="n">sgb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">sgb_pred</span><span class="o">=</span><span class="n">sgb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">sgb_pred</span><span class="p">))</span>
+<span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span><span class="n">sgb_pred</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sstack</span> <span class="o">=</span> <span class="n">StackingClassifier</span><span class="p">(</span><span class="n">estimators</span><span class="o">=</span><span class="n">estimators</span><span class="p">)</span>
+<span class="n">sstack</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">sstack_pred</span> <span class="o">=</span> <span class="n">sstack</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">sstack_pred</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<h3 id="future-selection">Future Selection</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">th</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sort</span><span class="p">(</span><span class="n">gb</span><span class="p">.</span><span class="n">feature_importances_</span><span class="p">)</span>
+<span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">th</span><span class="p">:</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="n">SelectFromModel</span><span class="p">(</span><span class="n">gb</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">g</span><span class="p">,</span> <span class="n">prefit</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+    <span class="n">x_Train</span> <span class="o">=</span> <span class="n">select</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">GradientBoostingClassifier</span><span class="p">()</span>
+    <span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_Train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+    <span class="n">x_Test</span> <span class="o">=</span> <span class="n">select</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_Test</span><span class="p">)</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Threshold:'</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="s">'Model Score:'</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">imp</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rf</span><span class="p">.</span><span class="n">feature_importances_</span><span class="p">)</span>
+<span class="n">imp</span><span class="p">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">.</span><span class="n">columns</span>
+<span class="n">imp</span><span class="p">[</span><span class="n">imp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.017037885998921535</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'Z_CostContact'</span><span class="p">,</span> <span class="s">'Z_Revenue'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'Z_CostContact'</span><span class="p">,</span> <span class="s">'Z_Revenue'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fgb</span> <span class="o">=</span> <span class="n">GradientBoostingClassifier</span><span class="p">()</span>
+<span class="n">fgb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fgb_pred</span> <span class="o">=</span> <span class="n">fgb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">fgb_pred</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">fgb_pred</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># First i check how many components we want
+# For this first i am initializing the pca
+</span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span>
+<span class="c1"># Fitting the training set in pca
+</span><span class="n">pca</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Now check number of components
+</span><span class="n">pca</span><span class="p">.</span><span class="n">explained_variance_ratio_</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Creating pca with n_components = 15
+</span><span class="n">Pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="c1"># Fitting the training data
+</span><span class="n">X_Train</span> <span class="o">=</span> <span class="n">Pca</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_Test</span> <span class="o">=</span> <span class="n">Pca</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Building models after applying pca
+</span><span class="n">pgb</span> <span class="o">=</span> <span class="n">GradientBoostingClassifier</span><span class="p">()</span>
+<span class="n">pgb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_Train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pgb_pred</span> <span class="o">=</span> <span class="n">pgb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_Test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">pgb_pred</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grid</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'learning_rate'</span> <span class="p">:</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="s">'n_estimators'</span> <span class="p">:</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">900</span><span class="p">],</span>
+    <span class="s">'min_samples_split'</span> <span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+    <span class="s">'max_depth'</span> <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s">'loss'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'deviance'</span><span class="p">,</span> <span class="s">'exponential'</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="n">random_cv</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">gb</span><span class="p">,</span>
+                              <span class="n">param_distributions</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                              <span class="n">n_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                              <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                              <span class="n">verbose</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+                              <span class="n">random_state</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                              <span class="n">scoring</span><span class="o">=</span><span class="s">'accuracy'</span><span class="p">)</span>
+<span class="n">random_cv</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">random_cv</span><span class="p">.</span><span class="n">best_estimator_</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hgb</span> <span class="o">=</span> <span class="n">GradientBoostingClassifier</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">'exponential'</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                           <span class="n">min_samples_split</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">hgb</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hgb_pred</span> <span class="o">=</span> <span class="n">hgb</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">hgb_pred</span><span class="p">))</span>
+<span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">hgb_pred</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>My Best model is Gradient Boosting Classifier after Hyper Parameter tuning</p>
+
+:ET
