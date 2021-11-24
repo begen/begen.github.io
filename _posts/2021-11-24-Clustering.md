@@ -68,17 +68,13 @@ We also have data on customer acceptance of campaign 1 to 5.
 Now let’s see the shape of our data and information about the datafram including the data type of each column and memory usage of the entire data. 
 
     df.shape
+    
+<p> Data contains 2240 rows and 28 columns </p>
 
-We have some unnecessary column that is ID, we do not need this ID column, hence we drop. It from our dataframe
 
+This info() pandas method prints information about dataframe incluyding the data types and non-null values
 
-```python
-df.drop('ID', axis=1, inplace = True)
-print('Data contains', df.shape[0], 'rows and', df.shape[1], 'columns')
-```
-
-    Data contains 2240 rows and 28 columns
-
+    df.info()
 
 
 ```python
@@ -121,12 +117,9 @@ df.info()
     dtypes: float64(1), int64(24), object(3)
     memory usage: 490.1+ KB
 
+Describe method gives us descriptive statistics of a dataframe. 
 
-
-```python
-df.describe().T
-```
-
+    df.describe().T
 
 
 
@@ -504,7 +497,7 @@ df.describe(include='O').T
 
 ### Feature Engineering 
 
-Our features (independent variables) must not contain missing or null values, outliers, data on a different scale, human errors and multicollinearity and very large independent sets. Multicollinearity is the concept when features are correlated. We do not want many features that are correlated to each other. 
+Our features must not contain missing or null values and outliers. 
 
 As part of feature engineering, we will check our data for missing or null values. We can find if our dataset contains any null values by running following line of code: 
 
@@ -559,7 +552,6 @@ df.isnull().sum()
 
 
 
-
     Year_Birth             0
     Education              0
     Marital_Status         0
@@ -609,254 +601,7 @@ def detect_outliers(frame):
 detect_outliers(df)
 ```
 
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_1.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_3.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_5.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_7.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_9.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_11.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_13.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_15.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_17.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_19.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_21.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_23.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_25.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_27.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_29.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_31.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_33.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_35.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_37.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_39.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_41.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_43.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_45.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_47.png)
-    
-
-
-    /Users/benserzhan/opt/anaconda3/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variable as a keyword arg: x. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
-      warnings.warn(
-
-
-
-    
-![png](output_16_49.png)
-    
+![png](posts\clustering\incomeout.png)
 
 
 We can see that income has extremely high value that is outlier. Such outlier has to be removed as we are not expecting small number of visitor with extremely high income. 
@@ -876,7 +621,7 @@ sns.boxplot(data=df['Income'])
 
 
     
-![png](output_18_1.png)
+![png](posts\clustering\incomeout.png)
     
 
 
