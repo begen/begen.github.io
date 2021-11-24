@@ -1,23 +1,17 @@
 ---
 layout: post
-title: "Customer Segmentation"
-subtitle: "Predicting customer segments that will respond to an offer for a product based on dataset"
-date: 2020-11-21 10:12:13 -0400
+title: "Customer Clsutering"
+subtitle: " Clustering customers based income and amount spent on products"
+date: 2020-11-24 10:12:13 -0400
 background: '/img/posts/06.jpg'
 my_variable: footer.html
 ---
 
-When it comes to the definition of ML, I want to think as building models of data.
-
-In essence, machine learning basically mean building mathematical models to help understand data. 
-
-Word “learning” is associated with tuning parameters. 
+On this project, we will be using clustering algorithms KMeans Clustering. Our dataset has information about Mall visitors such as income, total amount spent on certain products etc. Through KMeans algoriths, we will separate those customers into several clusters. Further marketing department can offer customized offers on products aimed at increasing sales. So our algorith builds clustering model of given dataset. 
 
 Once the model have been fit to previously seen data they can be used to predict and understand new observations. 
 
 We have data of 2249 customers visiting stores with following information
-
-this is text
 
 
 ```python
@@ -35,6 +29,8 @@ from imblearn.combine import SMOTETomek
 from sklearn.feature_selection import SelectFromModel
 from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans
 
 pd.options.display.max_columns = None
 pd.options.display.max_rows = None
@@ -47,224 +43,7 @@ df = pd.read_csv('marketing_campaign.csv', sep=';')
 df.head()
 ```
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>ID</th>
-      <th>Year_Birth</th>
-      <th>Education</th>
-      <th>Marital_Status</th>
-      <th>Income</th>
-      <th>Kidhome</th>
-      <th>Teenhome</th>
-      <th>Dt_Customer</th>
-      <th>Recency</th>
-      <th>MntWines</th>
-      <th>MntFruits</th>
-      <th>MntMeatProducts</th>
-      <th>MntFishProducts</th>
-      <th>MntSweetProducts</th>
-      <th>MntGoldProds</th>
-      <th>NumDealsPurchases</th>
-      <th>NumWebPurchases</th>
-      <th>NumCatalogPurchases</th>
-      <th>NumStorePurchases</th>
-      <th>NumWebVisitsMonth</th>
-      <th>AcceptedCmp3</th>
-      <th>AcceptedCmp4</th>
-      <th>AcceptedCmp5</th>
-      <th>AcceptedCmp1</th>
-      <th>AcceptedCmp2</th>
-      <th>Complain</th>
-      <th>Z_CostContact</th>
-      <th>Z_Revenue</th>
-      <th>Response</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>5524</td>
-      <td>1957</td>
-      <td>Graduation</td>
-      <td>Single</td>
-      <td>58138.0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>2012-09-04</td>
-      <td>58</td>
-      <td>635</td>
-      <td>88</td>
-      <td>546</td>
-      <td>172</td>
-      <td>88</td>
-      <td>88</td>
-      <td>3</td>
-      <td>8</td>
-      <td>10</td>
-      <td>4</td>
-      <td>7</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>3</td>
-      <td>11</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2174</td>
-      <td>1954</td>
-      <td>Graduation</td>
-      <td>Single</td>
-      <td>46344.0</td>
-      <td>1</td>
-      <td>1</td>
-      <td>2014-03-08</td>
-      <td>38</td>
-      <td>11</td>
-      <td>1</td>
-      <td>6</td>
-      <td>2</td>
-      <td>1</td>
-      <td>6</td>
-      <td>2</td>
-      <td>1</td>
-      <td>1</td>
-      <td>2</td>
-      <td>5</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>3</td>
-      <td>11</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>4141</td>
-      <td>1965</td>
-      <td>Graduation</td>
-      <td>Together</td>
-      <td>71613.0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>2013-08-21</td>
-      <td>26</td>
-      <td>426</td>
-      <td>49</td>
-      <td>127</td>
-      <td>111</td>
-      <td>21</td>
-      <td>42</td>
-      <td>1</td>
-      <td>8</td>
-      <td>2</td>
-      <td>10</td>
-      <td>4</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>3</td>
-      <td>11</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>6182</td>
-      <td>1984</td>
-      <td>Graduation</td>
-      <td>Together</td>
-      <td>26646.0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>2014-02-10</td>
-      <td>26</td>
-      <td>11</td>
-      <td>4</td>
-      <td>20</td>
-      <td>10</td>
-      <td>3</td>
-      <td>5</td>
-      <td>2</td>
-      <td>2</td>
-      <td>0</td>
-      <td>4</td>
-      <td>6</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>3</td>
-      <td>11</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>5324</td>
-      <td>1981</td>
-      <td>PhD</td>
-      <td>Married</td>
-      <td>58293.0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>2014-01-19</td>
-      <td>94</td>
-      <td>173</td>
-      <td>43</td>
-      <td>118</td>
-      <td>46</td>
-      <td>27</td>
-      <td>15</td>
-      <td>5</td>
-      <td>5</td>
-      <td>3</td>
-      <td>6</td>
-      <td>5</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>3</td>
-      <td>11</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+<p> Below are features we have </p>
 
 - Education level
 - Marital status
@@ -284,17 +63,11 @@ df.head()
 - Number of visits to website
 - Number of days since the last purchase
 
-
 We also have data on customer acceptance of campaign 1 to 5. 
-Our target variable is response that is if customer accepted the offer in one of those campaigns. 
-
-In this research project, we will be identifying groups of people who will respond to an offer for a product or a service. 
-
-Based on the data, we know that our target variable or dependent variable is “Response” column with 1 and 0 values. 
-
-Our predictive variables are the rest of columns that we explained above. Predictive variables are also called independent variables or features.  
 
 Now let’s see the shape of our data and information about the datafram including the data type of each column and memory usage of the entire data. 
+
+    df.shape
 
 We have some unnecessary column that is ID, we do not need this ID column, hence we drop. It from our dataframe
 
