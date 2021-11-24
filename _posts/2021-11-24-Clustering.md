@@ -7,7 +7,15 @@ background: '/img/posts/06.jpg'
 my_variable: footer.html
 ---
 
-On this project, we will be using clustering algorithms KMeans Clustering. Our dataset has information about Mall visitors such as income, total amount spent on certain products etc. Through KMeans algoriths, we will separate those customers into several clusters. Further marketing department can offer customized offers on products aimed at increasing sales. So our algorith builds clustering model of given dataset. 
+Companies are investing and exploring strategeis designed maintain current customers, to acquire new customers, help retain the current base and increase the customers lifelong value. As competition is rising, customer relationship management plays a significant role in identifying and performing analysis of company's valuable customers and adopting best marketing strategies. This project is the illustration of using a clustering technique that identifies customers with similar characteristics and behaviors and segregating into homogeneous clusters. We assume that those distinct groups of customers who function differently and follow different approaches in their spending and purchasing habits. So main aim of the project is to identify different customer types and segment them into cluster of similar profiles, so target marketing can be executed effectively and efficiently. As a result, will develop high-quality and long-term customer relationship that increase loyalty, growth and profit. 
+
+
+
+On this project, we will be using clustering algorithms KMeans Clustering. Clustering is a type of data mining technique used in a number of ways involving areas such as machine learning, pattern recognition and classification. 
+
+
+
+Our dataset has information about Mall visitors such as income, total amount spent on certain products etc. Through KMeans algoriths, we will separate those customers into several clusters. Further marketing department can offer customized offers on products aimed at increasing sales. So our algorith builds clustering model of given dataset. 
 
 Once the model have been fit to previously seen data they can be used to predict and understand new observations. 
 
@@ -629,6 +637,7 @@ Lets take a look at correlation matrix between features.
 
 #### Modeling
 
+KMeans clustering requires number of clusters that we need to input. In order to identify number of clusters, we will use elbow methods that will help us to get the optimal number of clusters recommended. 
 
     X1=df[['Income','TotalSpent']].iloc[:,:].values
     clusters=[]
@@ -642,27 +651,31 @@ Lets take a look at correlation matrix between features.
     plt.ylabel('Inertia')
     plt.show() 
 
-![png](/posts\clustering\elbow.png)
+In figure below, it 
+![png](\posts\clustering\elbow.png)
 
 
-  X=df[['Income','TotalSpent']]
 
-  km_5 = KMeans(n_clusters=5, init='k-means++', random_state=0)
-  km_5.fit(X)
-  centroids = km_5.cluster_centers_
-  X['Labels'] = km_5.labels_
+    X=df[['Income','TotalSpent']]
 
-  plt.figure(figsize=(12, 8))
+    km_5 = KMeans(n_clusters=4, init='k-means++', random_state=0)
+    km_5.fit(X)
+    centroids = km_5.cluster_centers_
+    X['Labels'] = km_5.labels_
 
-  sns.scatterplot(X['Income'], X['TotalSpent'], hue=X['Labels'], 
-                  palette=sns.color_palette('hls', 5))
+    plt.figure(figsize=(12, 8))
 
-  plt.scatter(centroids[:,0], centroids[:,1], c='red',s=200)
+    sns.scatterplot(X['Income'], X['TotalSpent'], hue=X['Labels'], 
+                    palette=sns.color_palette('hls', 5))
 
-  plt.title('',fontsize=18)
-  plt.show()
+    plt.scatter(centroids[:,0], centroids[:,1], c='red',s=200)
+
+    plt.title('',fontsize=18)
+    plt.show()
 
 
 ![png] (\posts\clustering\clustimg.png)
 
+### Conclusion
+We have clustered customers based on their income and total amount spent.  
 
