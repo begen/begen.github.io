@@ -678,6 +678,6 @@ In figure below, it can be observed that the elbow point occurs at K=4. After K=
 
 ![png](\posts\clustering\clustimg.png)
 
-As shown above, the scatter plot of the clusters is created with Income on Y-axis against TotalSpent on X-axis. The datapoints under each cluster are represented using different colors and the centroids are also depicted. 
+As shown above, the scatter plot of the clusters is created with Income on X-axis against TotalSpent on Y-axis. The datapoints under each cluster are represented using different colors and the centroids are also depicted. 
 
 Based on this clustering, each group's values have to be studied and marketing department has to develop proper strategies aimed at increasing customer loyalty and profits. 
