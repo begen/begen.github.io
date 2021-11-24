@@ -17,6 +17,8 @@ Once the model have been fit to previously seen data they can be used to predict
 
 We have data of 2249 customers visiting stores with following information
 
+this is text
+
 
 ```python
 import pandas as pd
