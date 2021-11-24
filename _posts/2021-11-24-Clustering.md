@@ -663,6 +663,6 @@ Lets take a look at correlation matrix between features.
   plt.show()
 
 
-![png] (/posts\clustering\clustimg.png)
+![png] (\posts\clustering\clustimg.png)
 
 
