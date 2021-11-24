@@ -77,13 +77,6 @@ This info() pandas method prints information about dataframe incluyding the data
     df.info()
 
 
-```python
-df.info()
-```
-
-    <class 'pandas.core.frame.DataFrame'>
-    RangeIndex: 2240 entries, 0 to 2239
-    Data columns (total 28 columns):
      #   Column               Non-Null Count  Dtype  
     ---  ------               --------------  -----  
      0   Year_Birth           2240 non-null   int64  
@@ -495,7 +488,10 @@ df.describe(include='O').T
 
 
 
-### Feature Engineering 
+
+<p></p>
+
+#### Feature Engineering 
 
 Our features must not contain missing or null values and outliers. 
 
@@ -584,7 +580,7 @@ df.isnull().sum()
 
 
 
-Next step would be to check if there are any outliers in our dataset. 
+Next step would be to check if there are any outliers in our dataset. We'll write detect_outlier function to detect our outliers. 
 
 
 ```python
@@ -601,10 +597,13 @@ def detect_outliers(frame):
 detect_outliers(df)
 ```
 
-![png](posts\clustering\incomeout.png)
+![png](\posts\clustering\incomeout.png)
 
 
 We can see that income has extremely high value that is outlier. Such outlier has to be removed as we are not expecting small number of visitor with extremely high income. 
+
+
+We have several options in dealing with outliers. In our case, we will replace missing values with mean value of salary. This is reasoable approach and should not bias our outcome significantly. 
 
 
 ```python
@@ -613,15 +612,8 @@ sns.boxplot(data=df['Income'])
 ```
 
 
-
-
-    <AxesSubplot:>
-
-
-
-
     
-![png](posts\clustering\incomeout.png)
+![png](\posts\clustering\incomewithoutout.png)
     
 
 
