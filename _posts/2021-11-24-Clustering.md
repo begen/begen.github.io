@@ -636,6 +636,7 @@ Lets take a look at correlation matrix between features.
 ![png](\posts\clustering\correl.png)
 
 #### Modeling
+KMeans clustering is one of the most poplular algorithms used for clustering as its simple and efficient to use. The aim of the KMeans algorithm is to divide M points in N dimensions into K clusters fixed a priori. K cluster points that will be centroids are placed in the space among the data points and each data point is assigned to the centroid for which the distance is the least. This means that algorithm will be completed when objective function will have least squarred error. 
 
 KMeans clustering requires number of clusters that we need to input. In order to identify number of clusters, we will use elbow methods that will help us to get the optimal number of clusters recommended. 
 
@@ -651,7 +652,8 @@ KMeans clustering requires number of clusters that we need to input. In order to
     plt.ylabel('Inertia')
     plt.show() 
 
-In figure below, it 
+In figure below, it can be observed that the elbow point occurs at K=4. After K=4, the differences is not significant. Hence we selected K=4 clusters and will use it as an input in our KMeans algorithm. 
+
 ![png](\posts\clustering\elbow.png)
 
 
@@ -674,8 +676,7 @@ In figure below, it
     plt.show()
 
 
-![png] (\posts\clustering\clustimg.png)
-
+![png](\posts\clustering\clustimg.png)
 ### Conclusion
 We have clustered customers based on their income and total amount spent.  
 
