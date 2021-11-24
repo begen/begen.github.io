@@ -3,7 +3,7 @@ layout: post
 title: "Customer Clsutering"
 subtitle: " Clustering customers based income and amount spent on products"
 date: 2020-11-24 10:12:13 -0400
-background: '/img/posts/06.jpg'
+background: '\img\posts\kmeans.jpg'
 my_variable: footer.html
 ---
 
