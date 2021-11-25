@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Customer Clsutering"
+title: "Customer Clusutering"
 subtitle: " Clustering customers based income and amount spent on products"
 date: 2020-11-24 10:12:13 -0400
 background: '\img\posts\kmeans.jpg'
@@ -9,18 +9,13 @@ my_variable: footer.html
 
 Companies are investing and exploring strategeis designed maintain current customers, to acquire new customers, help retain the current base and increase the customers lifelong value. As competition is rising, customer relationship management plays a significant role in identifying and performing analysis of company's valuable customers and adopting best marketing strategies. This project is the illustration of using a clustering technique that identifies customers with similar characteristics and behaviors and segregating into homogeneous clusters. We assume that those distinct groups of customers who function differently and follow different approaches in their spending and purchasing habits. So main aim of the project is to identify different customer types and segment them into cluster of similar profiles, so target marketing can be executed effectively and efficiently. As a result, will develop high-quality and long-term customer relationship that increase loyalty, growth and profit. 
 
-
-
 On this project, we will be using clustering algorithms KMeans Clustering. Clustering is a type of data mining technique used in a number of ways involving areas such as machine learning, pattern recognition and classification. 
-
-
 
 Our dataset has information about Mall visitors such as income, total amount spent on certain products etc. Through KMeans algoriths, we will separate those customers into several clusters. Further marketing department can offer customized offers on products aimed at increasing sales. So our algorith builds clustering model of given dataset. 
 
 Once the model have been fit to previously seen data they can be used to predict and understand new observations. 
 
 We have data of 2249 customers visiting stores with following information
-
 
 ```python
 import pandas as pd
