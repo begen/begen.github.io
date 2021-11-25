@@ -7,7 +7,6 @@ background: '/img/posts/06.jpg'
 my_variable: footer.html
 ---
 
-
 <p> 
 When it comes to the definition of ML, I want to thin as building models of data.</p>
 
@@ -48,9 +47,9 @@ Number of days since the last purchase
 
 <p>Our predictive variables are the rest of columns that we explained above. Predictive variables are also called independent variables or features.</p>  
 
+
+
 Lets first import data: 
-
-
 
     import pandas as pd
     import numpy as np
@@ -426,12 +425,10 @@ pgb = GradientBoostingClassifier()
 pgb.fit(X_Train, Y_train)
 ```
 
-
 ```python
 pgb_pred = pgb.predict(X_Test)
 print(classification_report(Y_test, pgb_pred))
 ```
-
 
 ```python
 grid = {
