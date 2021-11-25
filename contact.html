@@ -7,7 +7,7 @@ form: true
 ---
 
 <p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>
-<form action="https://getform.io/f/9af53f7b-4908-4b5b-b4da-66a8ddb83560" id="contactForm" novalidate method="POST">
+<form action="https://getform.io/f/9af53f7b-4908-4b5b-b4da-66a8ddb83560" id="contactForm" method="POST">
   <div class="control-group">
     <div class="form-group floating-label-form-group controls">
       <label>Name</label>
@@ -44,23 +44,55 @@ form: true
 </form>
 
 
-
-<form action="https://getform.io/f/9af53f7b-4908-4b5b-b4da-66a8ddb83560" id="contactForm" novalidate method="POST">
-  <input type="text" name="name">
-  <input type="email" name="email">
-  <input type="text" name="message">
-  <!-- checkbox handle --> 
-  <input type="checkbox" name="subscribe" value="yes" checked>
-  <input type="hidden" name="subscribe" value="no">
-  <!-- radio button handle --> 
-  <input type="radio" name="gender" value="male" checked>
-  <input type="radio" name="gender" value="female">
-  <input type="radio" name="gender" value="other">
-  <!-- select field handle --> 
-  <select name="work-experience">
-      <option value="one-year">0-1 years</option>
-      <option value="one-five-years">1-5 years</option>
-      <option value="five-plus-years">5+ years</option>
-  </select>
+<!-- modify this form HTML and place wherever you want your form -->
+<form
+  action="https://formspree.io/f/xlezrjjo"
+  method="POST"
+>
+  <label>
+    Your email:
+    <input type="email" name="_replyto">
+  </label>
+  <label>
+    Your message:
+    <textarea name="message"></textarea>
+  </label>
+  <!-- your other form fields go here -->
   <button type="submit">Send</button>
 </form>
+
+<!-- Read the Formbutton docs at formspree.io/formbutton/docs. See more examples at codepen.io/formspree -->
+<script src="https://formspree.io/js/formbutton-v1.min.js" defer></script>
+<script>
+  /* paste this line in verbatim */
+  window.formbutton=window.formbutton||function(){(formbutton.q=formbutton.q||[]).push(arguments)};
+  /* customize formbutton below*/     
+  formbutton("create", {
+    action: "https://formspree.io/f/xlezrjjo",
+    title: "How can we help?",
+    fields: [
+      { 
+        type: "email", 
+        label: "Email:", 
+        name: "email",
+        required: true,
+        placeholder: "your@email.com"
+      },
+      {
+        type: "textarea",
+        label: "Message:",
+        name: "message",
+        placeholder: "What's on your mind?",
+      },
+      { type: "submit" }      
+    ],
+    styles: {
+      title: {
+        backgroundColor: "gray"
+      },
+      button: {
+        backgroundColor: "gray"
+      }
+    }
+  });
+</script>
