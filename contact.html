@@ -48,14 +48,15 @@ form: true
 <form
   action="https://formspree.io/f/xlezrjjo"
   method="POST"
+  id="contactForm"
 >
   <label>
     Contact Name:
-    <input type="name" name="_replyto">
+    <input type="text" name="_replyto" class="form-control" placeholder="Name" id="name" >
   </label>
   <label>
     Phone:
-    <input type="phone" name="_replyto">
+    <input type="number" name="_replyto">
   </label>
   <label>
     Your email:
