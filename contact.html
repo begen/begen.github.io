@@ -51,23 +51,22 @@ form: true
   id="contactForm"
 >
   <label>
-    Contact Name:
     <input type="text" name="_replyto" class="form-control" placeholder="Name" id="name" >
   </label>
   <label>
     Phone:
-    <input type="number" name="_replyto">
+    <input type="tel" class="form-control" placeholder="Phone Number" id="phone" name="_replyto">
   </label>
   <label>
     Your email:
-    <input type="email" name="_replyto">
+    <input type="email" name="_replyto" class="form-control" placeholder="Email Address" id="email">
   </label>
   <label>
     Your message:
-    <textarea name="message"></textarea>
+    <textarea rows="5" class="form-control" placeholder="Message" id="message" name="message"></textarea>
   </label>
   <!-- your other form fields go here -->
-  <button type="submit">Send</button>
+  <button type="submit" class="btn btn-primary" id="sendMessageButton" >Send</button>
 </form>
 
 
