@@ -7,7 +7,17 @@ background: '\img\posts\kmeans.jpg'
 my_variable: footer.html
 ---
 
-Companies are investing and exploring strategeis designed maintain current customers, to acquire new customers, help retain the current base and increase the customers lifelong value. As competition is rising, customer relationship management plays a significant role in identifying and performing analysis of company's valuable customers and adopting best marketing strategies. This project is the illustration of using a clustering technique that identifies customers with similar characteristics and behaviors and segregating into homogeneous clusters. We assume that those distinct groups of customers who function differently and follow different approaches in their spending and purchasing habits. So main aim of the project is to identify different customer types and segment them into cluster of similar profiles, so target marketing can be executed effectively and efficiently. As a result, will develop high-quality and long-term customer relationship that increase loyalty, growth and profit. 
+Companies are investing and exploring strategeis designed maintain current customers, to acquire new customers, help retain the current base and increase the customers lifelong value. 
+
+As competition is rising, customer relationship management plays a significant role in identifying and performing analysis of company's valuable customers and adopting best marketing strategies. 
+
+This project is the illustration of using a clustering technique that identifies customers with similar characteristics and behaviors and segregating into homogeneous clusters. 
+
+We assume that those distinct groups of customers who function differently and follow different approaches in their spending and purchasing habits. 
+
+So main aim of the project is to identify different customer types and segment them into cluster of similar profiles, so target marketing can be executed effectively and efficiently.
+
+ As a result, will develop high-quality and long-term customer relationship that increase loyalty, growth and profit. 
 
 On this project, we will be using clustering algorithms KMeans Clustering. Clustering is a type of data mining technique used in a number of ways involving areas such as machine learning, pattern recognition and classification. 
 
