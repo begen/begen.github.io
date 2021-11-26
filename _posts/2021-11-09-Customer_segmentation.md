@@ -2,7 +2,7 @@
 layout: post
 title: "Customer Segmentation"
 subtitle: "Predicting customer segments that will respond to an offer for a product based on dataset"
-date: 2020-11-1 10:12:13 -0400
+date: 2021-09-10 10:12:13 -0400
 background: '/img/posts/06.jpg'
 my_variable: footer.html
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: "Amazon SageMaker- Predict Whether a Customer Will Enroll for a Certificate of Deposit"
 subtitle: "In this tutorial, we build, train and deploy a machine learning model with AWS SageMaker"
-date: 2021-10-27 23:45:13 -0400
+date: 2020-10-01 23:45:13 -0400
 background: '/img/bg-post.jpg'
 ---
 
