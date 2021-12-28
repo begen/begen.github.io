@@ -12,9 +12,13 @@ Create Sales by Month
 
 
 Can add insights 
-![png](posts\quicksight\insights.png)
+![png](\posts\quicksight\insights.png)
 
 Drill down to Customers
-![png](posts\quicksight\drill-down.png)
+![png](\posts\quicksight\drill-down.png)
 
 
+Create Pivot Table
+
+Lets create a Pivot table that demonstrates customers and revenue generated over years
+![png](\posts\quicksight\pivot-by-customer.png)
