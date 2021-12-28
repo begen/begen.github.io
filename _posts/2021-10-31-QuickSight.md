@@ -1,0 +1,64 @@
+---
+layout: post
+title: "Building Dashboards on QuickSight"
+subtitle: "Built dashboards, enhanse, add interactivity, calculation fields"
+date: 2021-10-31 01:10:01 -0400
+background: '/img/bg-post.jpg'
+---
+Our dashboard is built in Power Bi Desktop is free and can be connected to any different sources of data. In our case, we connected our SQL database. 
+
+I followed following steps to create my visualization and reports. 
+1)	Connected to database
+2)	Transformed and cleaned data to create a data model
+3)	Created visualizations  such as charts, graphs of data
+4)	Created reports generated of collection of visuals
+
+
+We obtained a dataset of call center that includes following information. 
+
+Tables: 
+
+- Customers 
+- Customer Acquisition
+- Customer Chat
+- Employees
+- Receipts
+- Reviews
+
+Each table has its own unique IDs such as Customer_ID, Chat_ID etc. 
+
+
+![png](\posts\dashboards\PowerBi-Cas.png)
+
+![png](\posts\dashboards\PowerBi-Cas2.png)
+
+![png](\posts\dashboards\PowerBi-Cas3.png)
+
+Created our own measures with Data Analysis Expressions(DAX) that help us to perform some calculations that I can use for my visualizations. DAX formulas are similar to formulas we use in excel. Once we create measures and its values can be aggregated. With those measures, 
+
+Aggregations are very important in understanding measures. Those measures further can be calculated to find following values: 
+1)	Sum
+2)	Average
+3)	Min and Max
+4)	Count( Distinct)
+5)	Standard Deviation
+6)	Variance
+7)	Median values
+
+Advantage of DAX function is that it works with relational data and can perform dynamic calculations as you interact with your report. 
+
+This measures help us to perform calculation on our data and results can be diplayed on dashboards. 
+
+Below, average rating has been calcualted taking into consideration ratings of employees. 
+
+
+    Average Rating = AVERAGE('cassendra reviews'[RATING])
+
+
+    Count of RATING average per RATING = 
+    AVERAGEX(
+        KEEPFILTERS(VALUES('cassendra reviews'[RATING])),
+        CALCULATE(DISTINCTCOUNT('cassendra reviews'[RATING]))
+    )
+
+
