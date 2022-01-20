@@ -6,14 +6,7 @@ date: 2022-01-05 01:10:01 -0400
 background: '/img/bg-post.jpg'
 ---
 
-Discuss the purpose of this database in the context of the startup, Sparkify, and their analytical goals.
-How to run the Python scripts
-An explanation of the files in the repository
-State and justify your database schema design and ETL pipeline.
-[Optional] Provide example queries and results for song play analysis.
-Here's a https://www.markdownguide.org/basic-syntax/guide on Markdown Syntax.*
-Provide DOCSTRING statement in each function implementation to describe what each function does.
-
+ 
 
 # Project: Data Modeling with Postgres
 
@@ -81,5 +74,27 @@ Dimensions:
 ![img](/posts\data-engineering\star_schema.png)
 
 ### ETL Pipeline
+
+Extract, transform, load(ETL) is the general procedure tha copies data from one or multiple sources into a destination system whick represents data differently from, or in a different context than, the sources. 
+
+#### Extracting and transforming data
+
+ETL pipeline first extarcts data from below two sources: 
+/data/log_data and
+/data/song_data.
+
+Then it transforms and loads the data into into tables (pls refer to schema table above) of the sparkifydb database. This is handled by below three files using Python and SQL: 
+
+1. create_tables.py- used to drop and create tables that resets tables before we run ETL scripts
+2. elt.py- reads and processes files from song_data and log_data and loads them into tables. 
+3. sql_queries.py- contains all SQL queries and is imported into the etl.py, etl.ipynb and test.ipynb files
+
+Using test.ipynb, we can check the result of ETL process. 
+
+The steps to run the pipeline are as follows: 
+1. In a terminal, run create_tables.py file to reset the tables in the sparkifydb database. 
+2. Running test.ipynb jupyter notebook confirms that the tables were successfully created with the correct columns. 
+3. in a terminal, run etl.py to process all dataset
+4. In Jupyter environment, run test.ipynb to confirm that the records were successfully inserted into each table. 
 
 
